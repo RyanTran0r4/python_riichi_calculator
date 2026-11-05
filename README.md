@@ -1,0 +1,1 @@
+This is a streamlit and python based riichi mahjong calculator webapp meant to be used for local play.
