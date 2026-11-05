@@ -105,11 +105,13 @@ def remove_item(index):
     hand.pop(index)
 
 # Function to add last to a tile
-def mark_last(index):
+def mark_last():
+    index = st.session_state.pick_last
+    if index is None or index > len(hand):
+        return
     for t in hand:
         t.tags.discard("last")
-    t[index].tags.add("last")
-
+    hand[index].tags.add("last")
 
 
 
@@ -163,9 +165,14 @@ st.header("Current Hand")
 if hand:
     # Create interactive buttons
     sort_hand()
-    st.write(" ".join(t.tile for t in hand)) # Temp Horizontal display as streamlit playground cannot do wrapping
+    hand_col = st.columns(4)
     for i, t in enumerate(hand):
-        st.button(t.tile, key=f"del_{i}", on_click=remove_item, args=(i,))
+        with hand_col[i % 3]:
+            st.button(f"({t.tile})" if "last" in t.tags else t.tile, key=f"del_{i}", on_click=remove_item, args=(i,))
+
+    # Mark tile as last
+    st.selectbox("Pick Last Tile", options=range(len(hand)), index=None, format_func=lambda i: hand[i].tile, key="pick_last", placeholder="Select Last Tile")
+    st.button("Mark Last", key=f"mark_last_tile", on_click=mark_last)
 else:
     message.clear()
     st.write("Nothing Yet")
