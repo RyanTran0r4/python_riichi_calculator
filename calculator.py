@@ -127,16 +127,16 @@ def mark_last():
 st.header("Adding Tiles")
 
 # Additional Information
-suit_info = st.checkbox("Suit Explanation")
-if suit_info:
+with st.expander("Suit Explanation", expanded=False):
     st.info(
     """
-m for Manzu - Characters\n
-p for Pinzu - Ball\n
-s for Souzu - Sticks/Bamboo\n
-z for Zihai - Honors (1-4 = ESWN, 5-7 = WGR Dragon)\n
+    m for Manzu - Characters\n
+    p for Pinzu - Ball\n
+    s for Souzu - Sticks/Bamboo\n
+    z for Zihai - Honors (1-4 = ESWN, 5-7 = WGR Dragon)\n
     """
     )   
+
 
 # Separating tiles by suit
 suit = st.segmented_control("Suits",["m", "p", "s", "z"], default=None, key="suit")
@@ -171,8 +171,8 @@ if hand:
             st.button(f"({t.tile})" if "last" in t.tags else t.tile, key=f"del_{i}", on_click=remove_item, args=(i,))
 
     # Mark tile as last
-    st.selectbox("Pick Last Tile", options=range(len(hand)), index=None, format_func=lambda i: hand[i].tile, key="pick_last", placeholder="Select Last Tile")
-    st.button("Mark Last", key=f"mark_last_tile", on_click=mark_last)
+    st.selectbox("Pick Last Tile", options=range(len(hand)), index=None, format_func=lambda i: f"{i+1}: {hand[i].tile}", key=f"pick_last", placeholder="Select Last Tile")
+    st.button("Mark Last", key=f"mark_last_tile{i}", on_click=mark_last)
 else:
     message.clear()
     st.write("Nothing Yet")
