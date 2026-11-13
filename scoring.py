@@ -1,4 +1,5 @@
 from pyriichi import GameState, Hand, ScoreCalculator, YakuChecker, parse_tiles, Suit, Tile, TileSet
+from calculator import TaggedTile, mark_last 
 
 kans = 0
 
@@ -44,4 +45,10 @@ def score_hand(full_hand, is_tsumo, seat, dealer = 0, honba = 0, sticks = 0, rii
     if (count != 13 + kans):
         return (None, (f"Need exactly {13+kans} other tiles."))
 
-    
+
+test_hand = input()
+indics = tuple(input().split())
+tagged_hand = [TaggedTile(t) for t in test_hand.split()]
+
+print(score_hand(tagged_hand, is_tsumo=False, seat=0, dora_indicator=indics))
+print(score_hand(tagged_hand, is_tsumo=False, seat=0, dora_indicator=indics))
