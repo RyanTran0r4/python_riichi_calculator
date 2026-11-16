@@ -98,16 +98,6 @@ def remove_item(index):
     message.clear()
     hand.pop(index)
 
-# Function to add last to a tile
-def mark_last():
-    index = st.session_state.pick_last
-    if index is None or index > len(hand):
-        return
-    for t in hand:
-        t.tags.discard("last")
-    hand[index].tags.add("last")
-
-
 
 
 
