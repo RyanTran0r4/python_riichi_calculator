@@ -1,5 +1,5 @@
 from pyriichi import GameState, Hand, ScoreCalculator, YakuChecker, parse_tiles, Suit, Tile, TileSet
-from calculator import TaggedTile
+from tile_models import TaggedTile, mark_last
 
 kans = 0
 
@@ -14,11 +14,6 @@ def get_all_dora(indicator):
     for ind in indicator:
         all_indicators.append(get_dora_tile(parse_tiles(ind)[0]))
     return all_indicators
-
-def no_st_mark_last(hand, index):
-    for t in hand:
-        t.tags.discard("last")
-    hand[index].tags.add("last")
 
 def score_hand(full_hand, is_tsumo, seat, dealer = 0, honba = 0, sticks = 0, riichi = False, ippatsu = False, dora_indicator = (), ron_from = None):
     # Scan Hand
@@ -66,9 +61,10 @@ def score_hand(full_hand, is_tsumo, seat, dealer = 0, honba = 0, sticks = 0, rii
     return (None, f"splits = {len(splits)}") # Temp Test Return
 
 
-test_hand = input("TEST - Enter your hand with the winning tile as the last tile:\n")
-indics = tuple(input("TEST - Enter Dora Indicators:\n").split())
-tagged_hand = [TaggedTile(t) for t in test_hand.split()]
-no_st_mark_last(tagged_hand, -1)
+if (__name__ == "__main__"):
+    test_hand = input("TEST - Enter your hand with the winning tile as the last tile:\n")
+    indics = tuple(input("TEST - Enter Dora Indicators:\n").split())
+    tagged_hand = [TaggedTile(t) for t in test_hand.split()]
+    mark_last(tagged_hand, -1)
 
-print(score_hand(tagged_hand, is_tsumo=False, seat=0, dora_indicator=indics))
+    print(score_hand(tagged_hand, is_tsumo=False, seat=0, dora_indicator=indics))

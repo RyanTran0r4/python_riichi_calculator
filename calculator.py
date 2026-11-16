@@ -1,5 +1,5 @@
 import streamlit as st
-from dataclasses import dataclass, field
+from tile_models import TaggedTile, mark_last
 # from pyriichi import *
 
 # Functions
@@ -14,12 +14,6 @@ if "message" not in st.session_state:
 # Shortening List Calls
 hand = st.session_state.hand
 message = st.session_state.message
-
-# Creating a Data Class to Store Info
-@dataclass
-class TaggedTile:
-    tile: str
-    tags: set[str] = field(default_factory = set)
 
 # Future Kan implementation
 kan = 0
@@ -137,7 +131,6 @@ with st.expander("Suit Explanation", expanded=False):
     """
     )   
 
-
 # Separating tiles by suit
 suit = st.segmented_control("Suits",["m", "p", "s", "z"], default=None, key="suit")
 if suit is None:
@@ -172,7 +165,7 @@ if hand:
 
     # Mark tile as last
     st.selectbox("Pick Last Tile", options=range(len(hand)), index=None, format_func=lambda i: f"{i+1}: {hand[i].tile}", key=f"pick_last", placeholder="Select Last Tile")
-    st.button("Mark Last", key=f"mark_last_tile{i}", on_click=mark_last)
+    st.button("Mark Last", key=f"mark_last_tile", on_click=mark_last, args=(hand, i))
 else:
     message.clear()
     st.write("Nothing Yet")
