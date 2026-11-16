@@ -155,7 +155,7 @@ if hand:
 
     # Mark tile as last
     st.selectbox("Pick Last Tile", options=range(len(hand)), index=None, format_func=lambda i: f"{i+1}: {hand[i].tile}", key=f"pick_last", placeholder="Select Last Tile")
-    st.button("Mark Last", key=f"mark_last_tile", on_click=mark_last, args=(hand, i))
+    st.button("Mark Last", key=f"mark_last_tile", on_click=mark_last, args=(hand, st.session_state.pick_last))
 else:
     message.clear()
     st.write("Nothing Yet")
