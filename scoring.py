@@ -1,5 +1,5 @@
 from pyriichi import GameState, Hand, ScoreCalculator, YakuChecker, parse_tiles, Suit, Tile, TileSet
-from calculator import TaggedTile, mark_last 
+from calculator import TaggedTile
 
 kans = 0
 
@@ -15,9 +15,14 @@ def get_all_dora(indicator):
         all_indicators.append(get_dora_tile(parse_tiles(ind)[0]))
     return all_indicators
 
+def no_st_mark_last(hand, index):
+    for t in hand:
+        t.tags.discard("last")
+    hand[index].tags.add("last")
+
 def score_hand(full_hand, is_tsumo, seat, dealer = 0, honba = 0, sticks = 0, riichi = False, ippatsu = False, dora_indicator = (), ron_from = None):
     # Scan Hand
-    winning_tile = []
+    winning_tile = None
     new_hand = []
     last_count = 0
     dora = get_all_dora(dora_indicator)
@@ -31,24 +36,39 @@ def score_hand(full_hand, is_tsumo, seat, dealer = 0, honba = 0, sticks = 0, rii
             num_dora += 1
 
         if "last" in t.tags:
-            winning_tile.append(t)
+            winning_tile = parse_tiles(t.tile)[0]
             last_count += 1
         else:
             new_hand.append(t)
             count += 1
 
-    new_hand = parse_tiles(" ".join(t.tile for t in new_hand))
-
+    # Return on invalid hands
     if (last_count != 1):
         return (None, ("Mark exactly one tile as the winning tile."))
 
     if (count != 13 + kans):
         return (None, (f"Need exactly {13+kans} other tiles."))
 
+    # Turn TaggedTiles into Pyriichi Tiles
+    new_hand = Hand(parse_tiles(" ".join(t.tile for t in new_hand)))
 
-test_hand = input()
-indics = tuple(input().split())
+    # Set riichi if True
+    if (riichi == True):
+        new_hand.set_riichi()
+
+    # Find Splits
+    splits = new_hand.get_winning_combinations(winning_tile)
+
+    # Return if no valid winning splits
+    if (not splits):
+        return (None, "Not a winning hand.")
+
+    return (None, f"splits = {len(splits)}") # Temp Test Return
+
+
+test_hand = input("TEST - Enter your hand with the winning tile as the last tile:\n")
+indics = tuple(input("TEST - Enter Dora Indicators:\n").split())
 tagged_hand = [TaggedTile(t) for t in test_hand.split()]
+no_st_mark_last(tagged_hand, -1)
 
-print(score_hand(tagged_hand, is_tsumo=False, seat=0, dora_indicator=indics))
 print(score_hand(tagged_hand, is_tsumo=False, seat=0, dora_indicator=indics))
